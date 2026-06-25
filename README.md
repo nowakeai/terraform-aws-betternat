@@ -49,3 +49,7 @@ terraform fmt -check -recursive
 terraform init -backend=false
 terraform validate
 ```
+
+Before the matching BetterNAT provider `0.2.0` is published, run `init` and
+`validate` with a local provider filesystem mirror. CI runs formatting only
+until the provider release exists.
