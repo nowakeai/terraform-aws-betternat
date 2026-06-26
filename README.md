@@ -36,6 +36,18 @@ The module defaults to:
 
 Run BetterNAT in a disposable VPC before replacing a production NAT Gateway.
 
+## When To Use This Module
+
+Use this module when private AWS workloads have enough NAT Gateway processing
+traffic to justify a self-managed active/standby gateway group.
+
+Start with the BetterNAT user docs:
+
+- Quick Start: <https://github.com/nowakeai/betternat/blob/main/docs/user/getting-started/QUICK_START.md>
+- Limitations: <https://github.com/nowakeai/betternat/blob/main/docs/user/reference/LIMITATIONS.md>
+- Operations: <https://github.com/nowakeai/betternat/blob/main/docs/user/operations/OPERATIONS_GUIDE.md>
+- Rollback: <https://github.com/nowakeai/betternat/blob/main/docs/user/operations/ROLLBACK_GUIDE.md>
+
 ## Route Ownership
 
 BetterNAT owns the private default routes for the route tables passed to this
