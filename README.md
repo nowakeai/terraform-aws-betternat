@@ -31,7 +31,7 @@ The module defaults to:
 - Spot instances enabled,
 - active/standby capacity per AZ,
 - stable shared EIP mode,
-- cloud-init bootstrap with BetterNAT runtime `v0.1.0`,
+- cloud-init bootstrap with BetterNAT runtime `v0.2.0`,
 - rollback on destroy.
 
 Run BetterNAT in a disposable VPC before replacing a production NAT Gateway.
@@ -62,6 +62,7 @@ terraform init -backend=false
 terraform validate
 ```
 
-Before the matching BetterNAT provider `0.2.0` is published, run `init` and
-`validate` with a local provider filesystem mirror. CI runs formatting only
-until the provider release exists.
+Before the matching BetterNAT provider `0.2.0` is published, maintainers can
+run `init` and `validate` with a local provider filesystem mirror. After
+publication, the normal Terraform Registry install path should pass `init` and
+`validate` without a mirror.

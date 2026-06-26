@@ -84,7 +84,7 @@ variable "max_size" {
 variable "betternat_version" {
   type        = string
   description = "BetterNAT runtime release tag."
-  default     = "v0.1.0"
+  default     = "v0.2.0"
 }
 
 variable "bootstrap_mode" {
