@@ -99,6 +99,30 @@ variable "stable_egress_ip" {
   default     = true
 }
 
+variable "eip_allocation_ids" {
+  type        = map(string)
+  description = "Externally managed AWS EIP allocation IDs keyed by availability zone. BetterNAT associates but never releases these addresses. Omitted zones use provider-managed EIPs."
+  default     = {}
+}
+
+variable "retain_managed_eips_on_destroy" {
+  type        = bool
+  description = "Retain provider-managed EIPs when gateway resources are destroyed so same-name recreation can re-adopt them. Prefer eip_allocation_ids for steady-state production ownership."
+  default     = false
+}
+
+variable "primary_interface" {
+  type        = string
+  description = "Primary gateway interface name, or auto to detect the interface owning the IPv4 default route during bootstrap."
+  default     = "auto"
+}
+
+variable "snat_interface" {
+  type        = string
+  description = "SNAT interface name, or auto to use the detected primary interface during bootstrap."
+  default     = "auto"
+}
+
 variable "ha_profile" {
   type        = string
   description = "BetterNAT HA timing profile."
