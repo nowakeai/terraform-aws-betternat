@@ -24,6 +24,36 @@ module "betternat" {
 }
 ```
 
+For production, keep the public identity independent from the gateway
+lifecycle:
+
+```hcl
+resource "aws_eip" "betternat" {
+  for_each = toset(module.vpc.azs)
+  domain   = "vpc"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+module "betternat" {
+  source  = "nowakeai/betternat/aws"
+  version = "~> 0.2"
+
+  # ...
+  eip_allocation_ids = {
+    for az, eip in aws_eip.betternat : az => eip.id
+  }
+}
+```
+
+The module passes each allocation ID only to the matching per-AZ gateway.
+BetterNAT associates and observes externally managed EIPs but never releases
+them. For an existing provider-managed deployment, first set
+`retain_managed_eips_on_destroy = true` and apply before replacement; use that
+option as a migration fallback rather than the preferred ownership model.
+
 The module defaults to:
 
 - latest AL2023 arm64 AMI lookup,
@@ -31,6 +61,7 @@ The module defaults to:
 - Spot instances enabled,
 - active/standby capacity per AZ,
 - stable shared EIP mode,
+- automatic primary and SNAT interface detection,
 - cloud-init bootstrap with BetterNAT runtime `v0.2.0`,
 - rollback on destroy.
 

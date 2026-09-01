@@ -33,6 +33,18 @@ locals {
   }
 }
 
+check "external_eip_configuration" {
+  assert {
+    condition     = length(var.eip_allocation_ids) == 0 || var.stable_egress_ip
+    error_message = "eip_allocation_ids requires stable_egress_ip = true."
+  }
+
+  assert {
+    condition     = alltrue([for az in keys(var.eip_allocation_ids) : contains(var.azs, az)])
+    error_message = "Every eip_allocation_ids key must also be present in azs."
+  }
+}
+
 resource "betternat_aws_gateway" "this" {
   for_each = local.az_configs
 
@@ -50,18 +62,25 @@ resource "betternat_aws_gateway" "this" {
 
   private_cidrs = var.private_cidrs
 
-  ami_id              = local.selected_ami_id
-  instance_type       = var.instance_type
-  use_spot            = var.use_spot
-  min_size            = var.min_size
-  desired_capacity    = var.desired_capacity
-  max_size            = var.max_size
-  betternat_version   = var.betternat_version
-  bootstrap_mode      = var.bootstrap_mode
-  stable_egress_ip    = var.stable_egress_ip
-  ha_profile          = var.ha_profile
-  prometheus_enabled  = var.prometheus_enabled
-  rollback_on_destroy = var.rollback_on_destroy
+  ami_id            = local.selected_ami_id
+  instance_type     = var.instance_type
+  use_spot          = var.use_spot
+  min_size          = var.min_size
+  desired_capacity  = var.desired_capacity
+  max_size          = var.max_size
+  betternat_version = var.betternat_version
+  bootstrap_mode    = var.bootstrap_mode
+  stable_egress_ip  = var.stable_egress_ip
+  eip_allocation_ids = {
+    for az, allocation_id in var.eip_allocation_ids : az => allocation_id
+    if az == each.key
+  }
+  retain_managed_eips_on_destroy = var.retain_managed_eips_on_destroy
+  primary_interface              = var.primary_interface
+  snat_interface                 = var.snat_interface
+  ha_profile                     = var.ha_profile
+  prometheus_enabled             = var.prometheus_enabled
+  rollback_on_destroy            = var.rollback_on_destroy
 
   associate_public_ip_address = var.associate_public_ip_address
   agent_binary_url            = var.agent_binary_url
