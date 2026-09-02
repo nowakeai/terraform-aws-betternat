@@ -3,6 +3,11 @@ output "gateway_ids" {
   value       = { for az, gateway in betternat_aws_gateway.this : az => gateway.id }
 }
 
+output "generation_ids" {
+  description = "Physical BetterNAT gateway generation IDs by availability zone. A value changes when the provider creates a replacement generation."
+  value       = { for az, gateway in betternat_aws_gateway.this : az => gateway.generation_id }
+}
+
 output "egress_public_ips" {
   description = "Public egress IPs by availability zone."
   value       = merge([for gateway in betternat_aws_gateway.this : gateway.egress_public_ips]...)
